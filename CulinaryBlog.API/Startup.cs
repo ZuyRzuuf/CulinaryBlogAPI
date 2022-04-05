@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using CulinaryBlog.Infrastructure.Database;
+using CulinaryBlog.Infrastructure.Interfaces;
+using CulinaryBlog.Infrastructure.Repositories;
 
 namespace CulinaryBlog.API
 {
@@ -26,6 +29,9 @@ namespace CulinaryBlog.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<DatabaseContext>();
+            services.AddScoped<IIngredientRepository, IngredientRepository>();
+            services.AddScoped<IIngredientCategoryRepository, IngredientCategoryRepository>();
             services.AddControllers();
 
             // Register the Swagger Generator service. This service is responsible for genrating Swagger Documents.
