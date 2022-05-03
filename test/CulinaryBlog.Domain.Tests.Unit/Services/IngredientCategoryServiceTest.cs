@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
 using CulinaryBlog.Domain.Services;
-using CulinaryBlog.Infrastructure.Interfaces;
 using Moq;
 using NUnit.Framework;
 
@@ -16,10 +15,17 @@ public class IngredientCategoryServiceTest
 {
     private Mock<IIngredientCategoryRepository> _mockIngredientCategoryRepository = default!;
     private IIngredientCategoryService _service = default!;
+    private IEnumerable<IngredientCategory> _ingredientCategoryInMemoryDatabase = default!;
 
     [SetUp]
     public void Setup()
     {
+        _ingredientCategoryInMemoryDatabase = new List<IngredientCategory>()
+        {
+            new() {Name = "IngredientCategory_1"},
+            new() {Name = "IngredientCategory_2"},
+            new() {Name = "IngredientCategory_3"},
+        };;
         _mockIngredientCategoryRepository = new Mock<IIngredientCategoryRepository>();
         _service = new IngredientCategoryService(_mockIngredientCategoryRepository.Object);
     }
@@ -27,19 +33,12 @@ public class IngredientCategoryServiceTest
     [Test]
     public void IngredientCategoryService_ReturnsAllIngredientCategories_WhenRepositoryResponseContainsData()
     {
-        IEnumerable<IngredientCategory> ingredientCategoryInMemoryDatabase = new List<IngredientCategory>
-        {
-            new() {Name = "IngredientCategory_1"},
-            new() {Name = "IngredientCategory_2"},
-            new() {Name = "IngredientCategory_3"},
-        };
-        
         _mockIngredientCategoryRepository.Setup(s => s.GetIngredientCategories())
-            .Returns(() => Task.FromResult(ingredientCategoryInMemoryDatabase));
+            .Returns(() => Task.FromResult(_ingredientCategoryInMemoryDatabase));
 
         var actual = _service.GetIngredientCategories().Result;
         
-        Assert.AreEqual(ingredientCategoryInMemoryDatabase, actual);
+        Assert.AreEqual(_ingredientCategoryInMemoryDatabase, actual);
     }
 
     [Test]
@@ -57,31 +56,19 @@ public class IngredientCategoryServiceTest
     [Test]
     public void IngredientCategoryService_ReturnsIngredientCategory_WhenUuidExists()
     {
-        IEnumerable<IngredientCategory> ingredientCategoryInMemoryDatabase = new List<IngredientCategory>
-        {
-            new() {Name = "IngredientCategory_1"},
-            new() {Name = "IngredientCategory_2"},
-            new() {Name = "IngredientCategory_3"},
-        };
-        var ingredientCategory = ingredientCategoryInMemoryDatabase.First();
+        var ingredientCategory = _ingredientCategoryInMemoryDatabase.First();
         var guid = ingredientCategory.UUID;
         
-        // _mockIngredientCategoryRepository.Setup(s => s.GetIngredientCategory(guid))
-        //     .Returns((Guid uuid) => Task.FromResult(ingredientCategoryInMemoryDatabase.Single(ic => ic.UUID == uuid)));
-
-        _mockIngredientCategoryRepository.Setup(s => s.GetIngredientCategory(ingredientCategory.UUID))
+        _mockIngredientCategoryRepository.Setup(r => r.GetIngredientCategory(ingredientCategory.UUID))
             .Returns((Guid uuid) =>
             {
-                // return Task.FromResult(
-                //     ingredientCategoryInMemoryDatabase.Single(ic => ic.UUID == uuid)
-                // );
                 return Task.FromResult(
-                    ingredientCategoryInMemoryDatabase.Single(ic => ic.UUID == uuid)
+                    _ingredientCategoryInMemoryDatabase.Single(ic => ic.UUID == uuid)
                 );
             });
 
         var actual = _service.GetIngredientCategory(guid);
         
-        Assert.AreEqual(ingredientCategoryInMemoryDatabase.First(), actual);
+        Assert.AreEqual(_ingredientCategoryInMemoryDatabase.First(), actual.Result);
     }
 }
