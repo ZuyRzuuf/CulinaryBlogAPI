@@ -1,8 +1,9 @@
 using CulinaryBlog.Domain.Entities;
 
-namespace CulinaryBlog.Infrastructure.Interfaces;
+namespace CulinaryBlog.Domain.Interfaces;
 
 public interface IIngredientCategoryRepository
 {
     public Task<IEnumerable<IngredientCategory>> GetIngredientCategories();
+    public Task<IngredientCategory> GetIngredientCategory(Guid uuid);
 }

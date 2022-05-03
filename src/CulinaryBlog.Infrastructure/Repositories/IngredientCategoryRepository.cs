@@ -1,4 +1,5 @@
 using CulinaryBlog.Domain.Entities;
+using CulinaryBlog.Domain.Interfaces;
 using CulinaryBlog.Infrastructure.Database;
 using CulinaryBlog.Infrastructure.Interfaces;
 using Dapper;
@@ -18,11 +19,19 @@ public class IngredientCategoryRepository : IIngredientCategoryRepository
     {
         const string query = "SELECT * FROM ingredient_category";
 
-        using(var connection = _mysqlContext.CreateConnection())
-        {
-            var ingredientsCategories = await connection.QueryAsync<IngredientCategory>(query);
+        using var connection = _mysqlContext.CreateConnection();
+        var ingredientsCategories = await connection.QueryAsync<IngredientCategory>(query);
 
-            return ingredientsCategories.ToList();
-        }
+        return ingredientsCategories.ToList();
+    }
+
+    public async Task<IngredientCategory> GetIngredientCategory(Guid uuid)
+    {
+        const string query = "SELECT * FROM ingredient_category WHERE uuid = @Uuid";
+
+        using var connection = _mysqlContext.CreateConnection();
+        var ingredientsCategory = await connection.QuerySingleOrDefaultAsync<IngredientCategory>(query, new {uuid});
+
+        return ingredientsCategory;
     }
 }

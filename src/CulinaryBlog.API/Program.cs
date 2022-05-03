@@ -1,12 +1,20 @@
+using CulinaryBlog.Domain;
+using CulinaryBlog.Domain.Interfaces;
+using CulinaryBlog.Domain.Services;
 using CulinaryBlog.Infrastructure.Database;
+using CulinaryBlog.Infrastructure.Helpers;
 using CulinaryBlog.Infrastructure.Interfaces;
 using CulinaryBlog.Infrastructure.Repositories;
+using Dapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSingleton<MysqlContext>();
 builder.Services.AddScoped<IIngredientCategoryRepository, IngredientCategoryRepository>();
+builder.Services.AddScoped<IIngredientCategoryService, IngredientCategoryService>();
+builder.Services.RegisterDataServices();
+SqlMapper.AddTypeHandler(new MySqlGuidTypeHandler());
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

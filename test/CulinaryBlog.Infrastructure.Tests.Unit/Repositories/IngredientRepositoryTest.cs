@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Infrastructure.Interfaces;
 using Moq;
 using NUnit.Framework;
