@@ -1,7 +1,8 @@
+using System.Data;
+using CulinaryBlog.Domain.Dto;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
 using CulinaryBlog.Infrastructure.Database;
-using CulinaryBlog.Infrastructure.Interfaces;
 using Dapper;
 
 namespace CulinaryBlog.Infrastructure.Repositories;
@@ -33,5 +34,27 @@ public class IngredientCategoryRepository : IIngredientCategoryRepository
         var ingredientsCategory = await connection.QuerySingleOrDefaultAsync<IngredientCategory>(query, new {uuid});
 
         return ingredientsCategory;
+    }
+
+    public async Task<IngredientCategory> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategoryDto)
+    {
+        const string query = "INSERT INTO ingredient_category (uuid, name) VALUES (@Uuid, @Name)";
+        var uuid = ingredientCategoryDto.Uuid;
+        var name = ingredientCategoryDto.Name;
+        
+        var parameters = new DynamicParameters();
+        
+        parameters.Add("Uuid", uuid, DbType.Guid);
+        parameters.Add("Name", name, DbType.String);
+
+        using var connection = _mysqlContext.CreateConnection();
+        
+        await connection.ExecuteAsync(query, parameters);
+
+        return new IngredientCategory()
+        {
+            Uuid = uuid,
+            Name = name
+        };
     }
 }

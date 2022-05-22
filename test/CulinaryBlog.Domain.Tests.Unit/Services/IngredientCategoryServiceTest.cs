@@ -22,9 +22,9 @@ public class IngredientCategoryServiceTest
     {
         _ingredientCategoryInMemoryDatabase = new List<IngredientCategory>()
         {
-            new() {Name = "IngredientCategory_1"},
-            new() {Name = "IngredientCategory_2"},
-            new() {Name = "IngredientCategory_3"},
+            new() {Uuid = Guid.Parse("ab24fde6-495b-45b6-be3c-1343939b646a"), Name = "IngredientCategory_1"},
+            new() {Uuid = Guid.Parse("fe0efe1e-eab7-4ca4-a059-e51de04b0eed"), Name = "IngredientCategory_2"},
+            new() {Uuid = Guid.Parse("a4f5ceb4-3d74-444f-a05f-57e8cfd42061"), Name = "IngredientCategory_3"},
         };;
         _mockIngredientCategoryRepository = new Mock<IIngredientCategoryRepository>();
         _service = new IngredientCategoryService(_mockIngredientCategoryRepository.Object);
@@ -57,13 +57,13 @@ public class IngredientCategoryServiceTest
     public void IngredientCategoryService_ReturnsIngredientCategory_WhenUuidExists()
     {
         var ingredientCategory = _ingredientCategoryInMemoryDatabase.First();
-        var guid = ingredientCategory.UUID;
+        var guid = ingredientCategory.Uuid;
         
-        _mockIngredientCategoryRepository.Setup(r => r.GetIngredientCategory(ingredientCategory.UUID))
+        _mockIngredientCategoryRepository.Setup(r => r.GetIngredientCategory(ingredientCategory.Uuid))
             .Returns((Guid uuid) =>
             {
                 return Task.FromResult(
-                    _ingredientCategoryInMemoryDatabase.Single(ic => ic.UUID == uuid)
+                    _ingredientCategoryInMemoryDatabase.Single(ic => ic.Uuid == uuid)
                 );
             });
 

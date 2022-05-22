@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CulinaryBlog.API.Controllers;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
 using Moq;
@@ -11,6 +12,7 @@ namespace CulinaryBlog.API.Tests.Unit.Controllers;
 public class IngredientCategoryControllerTest
 {
     private Mock<IIngredientCategoryService> _mockIngredientCategoryService = default!;
+    private IngredientCategoryController _ingredientCategoryController = default!;
     
     [SetUp]
     public void Setup()
@@ -31,6 +33,11 @@ public class IngredientCategoryControllerTest
         _mockIngredientCategoryService.Setup(s => s.GetIngredientCategories())
             .Returns(() => Task.FromResult(ingredientCategoryInMemoryDatabase));
         
+        // var actual = _mockIngredientCategoryService.
+        
+        // var controllerAction = _ingredientCategoryController.GetIngredientCategories();
+        
         Assert.Pass();
+        // Assert.AreEqual(ingredientCategoryInMemoryDatabase.First(), );
     }
 }

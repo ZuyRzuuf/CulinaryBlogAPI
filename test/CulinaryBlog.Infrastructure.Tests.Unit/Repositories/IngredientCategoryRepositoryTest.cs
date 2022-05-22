@@ -20,9 +20,9 @@ public class IngredientCategoryRepositoryTest
         _mockRepository = new Mock<IIngredientCategoryRepository>();
         _ingredientCategoryInMemoryDatabase = new List<IngredientCategory>
         {
-            new() {Name = "IngredientCategory_1"},
-            new() {Name = "IngredientCategory_2"},
-            new() {Name = "IngredientCategory_3"},
+            new() {Uuid = Guid.Parse("ab24fde6-495b-45b6-be3c-1343939b646a"), Name = "IngredientCategory_1"},
+            new() {Uuid = Guid.Parse("fe0efe1e-eab7-4ca4-a059-e51de04b0eed"), Name = "IngredientCategory_2"},
+            new() {Uuid = Guid.Parse("a4f5ceb4-3d74-444f-a05f-57e8cfd42061"), Name = "IngredientCategory_3"},
         };
     }
 
@@ -45,15 +45,15 @@ public class IngredientCategoryRepositoryTest
     {
         var ingredientCategory = _ingredientCategoryInMemoryDatabase.First();
         
-        _mockRepository.Setup(r => r.GetIngredientCategory(ingredientCategory.UUID))
+        _mockRepository.Setup(r => r.GetIngredientCategory(ingredientCategory.Uuid))
             .Returns((Guid uuid) =>
             {
                 return Task.FromResult(
-                    _ingredientCategoryInMemoryDatabase.Single(ic => ic.UUID == uuid)
+                    _ingredientCategoryInMemoryDatabase.Single(ic => ic.Uuid == uuid)
                 );
             });
 
-        var actual = _mockRepository.Object.GetIngredientCategory(ingredientCategory.UUID);
+        var actual = _mockRepository.Object.GetIngredientCategory(ingredientCategory.Uuid);
 
         Assert.NotNull(actual.Result);
         Assert.AreEqual(_ingredientCategoryInMemoryDatabase.First(), actual.Result);
@@ -68,7 +68,7 @@ public class IngredientCategoryRepositoryTest
             .Returns((Guid uuid) =>
             {
                 return Task.FromResult(
-                    _ingredientCategoryInMemoryDatabase.SingleOrDefault(ic => ic.UUID == uuid)
+                    _ingredientCategoryInMemoryDatabase.SingleOrDefault(ic => ic.Uuid == uuid)
                 )!;
             });
 

@@ -7,7 +7,7 @@ namespace CulinaryBlog.Domain.Tests.Unit.Entities;
 [TestFixture]
 public class IngredientCategoryTest
 {
-    private readonly Guid _emptyGuid = new();
+    private readonly Guid _guid = Guid.NewGuid();
     private string _name = "IngredientCategoryName";
     
     [SetUp]
@@ -23,7 +23,7 @@ public class IngredientCategoryTest
             Name = _name
         };
 
-        Assert.AreNotEqual(ingredientCategory.UUID, _emptyGuid);
+        Assert.AreNotEqual(ingredientCategory.Uuid, _guid);
         Assert.AreEqual(ingredientCategory.Name, _name);
     }
 
@@ -32,7 +32,7 @@ public class IngredientCategoryTest
     {
         var ingredientCategory = new IngredientCategory();
 
-        Assert.AreNotEqual(ingredientCategory.UUID, _emptyGuid);
+        Assert.AreNotEqual(ingredientCategory.Uuid, _guid);
         Assert.AreEqual(ingredientCategory.Name, null);
     }
 }

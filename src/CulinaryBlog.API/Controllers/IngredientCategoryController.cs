@@ -1,3 +1,4 @@
+using CulinaryBlog.Domain.Dto;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,8 @@ public class IngredientCategoryController : ControllerBase
         }
     }
 
-    [HttpGet("{uuid}", Name = "IngredientCategoryByUuid")]
+    [HttpGet("{uuid:guid}")]
+    [ActionName("IngredientCategoryByUuid")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IngredientCategory))]
     public async Task<IActionResult> GetIngredientCategory(Guid uuid)
     {
@@ -39,6 +41,27 @@ public class IngredientCategoryController : ControllerBase
             var ingredientCategory = await _ingredientCategoryService.GetIngredientCategory(uuid);
 
             return Ok(ingredientCategory);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IngredientCategory))]
+    public async Task<IActionResult> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategory)
+    {
+        try
+        {
+            var createdIngredientCategory =
+                await _ingredientCategoryService.CreateIngredientCategory(ingredientCategory);
+
+            return CreatedAtRoute(
+                "IngredientCategoryByUuid", 
+                new {uuid = ingredientCategory.Uuid}, 
+                createdIngredientCategory.Uuid
+            );
         }
         catch (Exception e)
         {

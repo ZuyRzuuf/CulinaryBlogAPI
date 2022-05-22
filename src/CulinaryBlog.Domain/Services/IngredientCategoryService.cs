@@ -1,6 +1,6 @@
+using CulinaryBlog.Domain.Dto;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
-using CulinaryBlog.Infrastructure.Interfaces;
 
 namespace CulinaryBlog.Domain.Services;
 
@@ -23,6 +23,13 @@ public class IngredientCategoryService : IIngredientCategoryService
     public Task<IngredientCategory> GetIngredientCategory(Guid uuid)
     {
         var response = _ingredientCategoryRepository.GetIngredientCategory(uuid);
+
+        return response;
+    }
+
+    public Task<IngredientCategory> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategory)
+    {
+        var response = _ingredientCategoryRepository.CreateIngredientCategory(ingredientCategory);
 
         return response;
     }
