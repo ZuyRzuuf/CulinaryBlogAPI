@@ -57,10 +57,10 @@ public class IngredientCategoryController : ControllerBase
             var createdIngredientCategory =
                 await _ingredientCategoryService.CreateIngredientCategory(ingredientCategory);
 
-            return CreatedAtRoute(
+            return CreatedAtAction(
                 "IngredientCategoryByUuid", 
-                new {uuid = ingredientCategory.Uuid}, 
-                createdIngredientCategory.Uuid
+                new {uuid = createdIngredientCategory.Uuid}, 
+                createdIngredientCategory
             );
         }
         catch (Exception e)
