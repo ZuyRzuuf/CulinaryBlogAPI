@@ -57,4 +57,32 @@ public class IngredientCategoryRepository : IIngredientCategoryRepository
             Name = name
         };
     }
+
+    public async Task<int> UpdateIngredientCategory(Guid uuid, UpdateIngredientCategoryDto ingredientCategoryDto)
+    {
+        const string query = "UPDATE ingredient_category SET name = @Name WHERE uuid = @Uuid";
+        var name = ingredientCategoryDto.Name;
+
+        var parameters = new DynamicParameters();
+        
+        parameters.Add("Uuid", uuid, DbType.Guid);
+        parameters.Add("Name", name, DbType.String);
+        
+        using var connection = _mysqlContext.CreateConnection();
+        
+        return await connection.ExecuteAsync(query, parameters);
+    }
+
+    public async Task<int> DeleteIngredientCategory(Guid uuid)
+    {
+        const string query = "DELETE FROM ingredient_category WHERE uuid = @Uuid";
+        
+        var parameters = new DynamicParameters();
+        
+        parameters.Add("Uuid", uuid, DbType.Guid);
+        
+        using var connection = _mysqlContext.CreateConnection();
+        
+        return await connection.ExecuteAsync(query, new {uuid});
+    }
 }

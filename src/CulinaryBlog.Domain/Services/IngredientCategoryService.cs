@@ -27,9 +27,23 @@ public class IngredientCategoryService : IIngredientCategoryService
         return response;
     }
 
-    public Task<IngredientCategory> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategory)
+    public Task<IngredientCategory> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategoryDto)
     {
-        var response = _ingredientCategoryRepository.CreateIngredientCategory(ingredientCategory);
+        var response = _ingredientCategoryRepository.CreateIngredientCategory(ingredientCategoryDto);
+
+        return response;
+    }
+
+    public Task<int> UpdateIngredientCategory(Guid uuid, UpdateIngredientCategoryDto ingredientCategoryDto)
+    {
+        var response = _ingredientCategoryRepository.UpdateIngredientCategory(uuid, ingredientCategoryDto);
+
+        return response;
+    }
+
+    public Task<int> DeleteIngredientCategory(Guid uuid)
+    {
+        var response = _ingredientCategoryRepository.DeleteIngredientCategory(uuid);
 
         return response;
     }

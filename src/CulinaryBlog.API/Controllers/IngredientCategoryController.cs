@@ -17,6 +17,7 @@ public class IngredientCategoryController : ControllerBase
     
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IngredientCategory))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetIngredientCategories()
     {
         try
@@ -34,6 +35,7 @@ public class IngredientCategoryController : ControllerBase
     [HttpGet("{uuid:guid}")]
     [ActionName("IngredientCategoryByUuid")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IngredientCategory))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetIngredientCategory(Guid uuid)
     {
         try
@@ -50,6 +52,7 @@ public class IngredientCategoryController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IngredientCategory))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategory)
     {
         try
@@ -62,6 +65,52 @@ public class IngredientCategoryController : ControllerBase
                 new {uuid = createdIngredientCategory.Uuid}, 
                 createdIngredientCategory
             );
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateIngredientCategory(Guid uuid, UpdateIngredientCategoryDto ingredientCategoryDto)
+    {
+        try
+        {
+            var response = await _ingredientCategoryService.UpdateIngredientCategory(uuid, ingredientCategoryDto);
+
+            if (response == 0)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+    
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteIngredientCategory(Guid uuid)
+    {
+        try
+        {
+            var response = await _ingredientCategoryService.DeleteIngredientCategory(uuid);
+
+            if (response == 0)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
         catch (Exception e)
         {
