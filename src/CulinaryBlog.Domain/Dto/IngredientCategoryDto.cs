@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CulinaryBlog.Domain.Dto;
 
-public class UpdateIngredientCategoryDto : IngredientCategoryDto
+public class IngredientCategoryDto
 {
     [Required]
-    public Guid Uuid { get; set; }
+    public string? Name { get; set; }
 }

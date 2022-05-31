@@ -34,9 +34,9 @@ public class IngredientCategoryService : IIngredientCategoryService
         return response;
     }
 
-    public Task<int> UpdateIngredientCategory(Guid uuid, UpdateIngredientCategoryDto ingredientCategoryDto)
+    public Task<int> UpdateIngredientCategory(UpdateIngredientCategoryDto ingredientCategoryDto)
     {
-        var response = _ingredientCategoryRepository.UpdateIngredientCategory(uuid, ingredientCategoryDto);
+        var response = _ingredientCategoryRepository.UpdateIngredientCategory(ingredientCategoryDto);
 
         return response;
     }

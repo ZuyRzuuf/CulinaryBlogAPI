@@ -76,11 +76,11 @@ public class IngredientCategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateIngredientCategory(Guid uuid, UpdateIngredientCategoryDto ingredientCategoryDto)
+    public async Task<IActionResult> UpdateIngredientCategory(UpdateIngredientCategoryDto ingredientCategoryDto)
     {
         try
         {
-            var response = await _ingredientCategoryService.UpdateIngredientCategory(uuid, ingredientCategoryDto);
+            var response = await _ingredientCategoryService.UpdateIngredientCategory(ingredientCategoryDto);
 
             if (response == 0)
             {

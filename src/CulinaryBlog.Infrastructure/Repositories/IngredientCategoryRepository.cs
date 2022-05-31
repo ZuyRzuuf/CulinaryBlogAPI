@@ -39,7 +39,7 @@ public class IngredientCategoryRepository : IIngredientCategoryRepository
     public async Task<IngredientCategory> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategoryDto)
     {
         const string query = "INSERT INTO ingredient_category (uuid, name) VALUES (@Uuid, @Name)";
-        var uuid = ingredientCategoryDto.Uuid;
+        var uuid = Guid.NewGuid();
         var name = ingredientCategoryDto.Name;
         
         var parameters = new DynamicParameters();
@@ -58,9 +58,10 @@ public class IngredientCategoryRepository : IIngredientCategoryRepository
         };
     }
 
-    public async Task<int> UpdateIngredientCategory(Guid uuid, UpdateIngredientCategoryDto ingredientCategoryDto)
+    public async Task<int> UpdateIngredientCategory(UpdateIngredientCategoryDto ingredientCategoryDto)
     {
         const string query = "UPDATE ingredient_category SET name = @Name WHERE uuid = @Uuid";
+        var uuid = ingredientCategoryDto.Uuid;
         var name = ingredientCategoryDto.Name;
 
         var parameters = new DynamicParameters();
