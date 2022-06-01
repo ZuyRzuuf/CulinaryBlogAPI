@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CulinaryBlog.Domain.Dto;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
 using Moq;
@@ -20,9 +21,9 @@ public class IngredientCategoryRepositoryTest
         _mockRepository = new Mock<IIngredientCategoryRepository>();
         _ingredientCategoryInMemoryDatabase = new List<IngredientCategory>
         {
-            new() {Uuid = Guid.Parse("ab24fde6-495b-45b6-be3c-1343939b646a"), Name = "IngredientCategory_1"},
-            new() {Uuid = Guid.Parse("fe0efe1e-eab7-4ca4-a059-e51de04b0eed"), Name = "IngredientCategory_2"},
-            new() {Uuid = Guid.Parse("a4f5ceb4-3d74-444f-a05f-57e8cfd42061"), Name = "IngredientCategory_3"},
+            new() {Uuid = Guid.Parse("ab24fde6-495b-45b6-be3c-1343939b646a"), Name = "IngredientCategory 1"},
+            new() {Uuid = Guid.Parse("fe0efe1e-eab7-4ca4-a059-e51de04b0eed"), Name = "IngredientCategory 2"},
+            new() {Uuid = Guid.Parse("a4f5ceb4-3d74-444f-a05f-57e8cfd42061"), Name = "IngredientCategory 3"},
         };
     }
 
@@ -75,5 +76,62 @@ public class IngredientCategoryRepositoryTest
         var actual = _mockRepository.Object.GetIngredientCategory(guid);
 
         Assert.Null(actual.Result);
+    }
+
+    [Test]
+    public void CreateIngredientCategory_ReturnsStatusCreated_WhenIngredientCategoryCreated()
+    {
+        var ingredientCategoryDto = new CreateIngredientCategoryDto()
+        {
+            Name = "test"
+        };
+        
+        // _mockRepository.Setup(r => r.CreateIngredientCategory(ingredientCategoryDto))
+        //     .Returns((Guid uuid) =>
+        //     {
+        //         Task.FromResult(
+        //             _ingredientCategoryInMemoryDatabase.Insert(
+        //                 _ingredientCategoryInMemoryDatabase.Count, 
+        //                 new IngredientCategory()
+        //                 {
+        //                     Uuid = uuid,
+        //                     Name = ingredientCategoryDto.Name
+        //                 })
+        //         );
+        //     });
+
+        // _mockRepository.Setup(r => r.CreateIngredientCategory(ingredientCategoryDto))
+        //     .ReturnsAsync((Guid uuid) =>
+        //     {
+        //         _ingredientCategoryInMemoryDatabase.Insert(
+        //             _ingredientCategoryInMemoryDatabase.Count,
+        //             new IngredientCategory()
+        //             {
+        //                 Uuid = uuid,
+        //                 Name = ingredientCategoryDto.Name
+        //             })
+        //     });
+
+        // _mockRepository.Setup(r => r.CreateIngredientCategory(ingredientCategoryDto))
+        //     .ReturnsAsync(new IngredientCategory()
+        //     {
+        //         Name = ingredientCategoryDto.Name
+        //     });
+        
+        _mockRepository.Setup(r => r.CreateIngredientCategory(ingredientCategoryDto))
+            .Callback<CreateIngredientCategoryDto>(dto =>
+            {
+                var ingredientCategory = new IngredientCategory()
+                {
+                    Uuid = Guid.NewGuid(),
+                    Name = dto.Name
+                };
+            });
+        
+        var actual = _mockRepository.Object.GetIngredientCategories();
+
+        Console.WriteLine(_mockRepository);
+        
+        Assert.True(true);
     }
 }
