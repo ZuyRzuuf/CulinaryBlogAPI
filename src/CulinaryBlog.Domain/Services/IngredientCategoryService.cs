@@ -13,7 +13,7 @@ public class IngredientCategoryService : IIngredientCategoryService
         _ingredientCategoryRepository = ingredientCategoryRepository;
     }
     
-    public Task<IEnumerable<IngredientCategory>> GetIngredientCategories()
+    public Task<IList<IngredientCategory>> GetIngredientCategories()
     {
         var response = _ingredientCategoryRepository.GetIngredientCategories();
         

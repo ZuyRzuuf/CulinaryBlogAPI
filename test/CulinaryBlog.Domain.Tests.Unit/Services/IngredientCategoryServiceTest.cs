@@ -15,7 +15,7 @@ public class IngredientCategoryServiceTest
 {
     private Mock<IIngredientCategoryRepository> _mockIngredientCategoryRepository = default!;
     private IIngredientCategoryService _service = default!;
-    private IEnumerable<IngredientCategory> _ingredientCategoryInMemoryDatabase = default!;
+    private IList<IngredientCategory> _ingredientCategoryInMemoryDatabase = default!;
 
     [SetUp]
     public void Setup()
@@ -42,15 +42,13 @@ public class IngredientCategoryServiceTest
     }
 
     [Test]
-    public void IngredientCategoryService_ReturnsEmptyResponse_WhenRepositoryResponseIsEmpty()
+    public void IngredientCategoryService_ReturnsNull_WhenRepositoryResponseIsNull()
     {
-        IEnumerable<IngredientCategory> ingredientCategoryInMemoryDatabase = new List<IngredientCategory>();
-        
         _mockIngredientCategoryRepository.Setup(s => s.GetIngredientCategories());
 
         var actual = _service.GetIngredientCategories().Result;
         
-        Assert.AreEqual(ingredientCategoryInMemoryDatabase, actual);
+        Assert.IsNull(actual);
     }
 
     [Test]

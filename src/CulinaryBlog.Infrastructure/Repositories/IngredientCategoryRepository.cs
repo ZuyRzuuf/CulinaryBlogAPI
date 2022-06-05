@@ -16,7 +16,7 @@ public class IngredientCategoryRepository : IIngredientCategoryRepository
         _mysqlContext = mysqlContext;
     }
 
-    public async Task<IEnumerable<IngredientCategory>> GetIngredientCategories()
+    public async Task<IList<IngredientCategory>> GetIngredientCategories()
     {
         const string query = "SELECT * FROM ingredient_category";
 
