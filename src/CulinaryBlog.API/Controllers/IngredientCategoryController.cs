@@ -1,3 +1,4 @@
+using System.Text;
 using CulinaryBlog.Domain.Dto;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
@@ -53,7 +54,7 @@ public class IngredientCategoryController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IngredientCategory))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategory)
+    public async Task<IActionResult> CreateIngredientCategory([FromBody] CreateIngredientCategoryDto ingredientCategory)
     {
         try
         {
@@ -76,7 +77,7 @@ public class IngredientCategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateIngredientCategory(UpdateIngredientCategoryDto ingredientCategoryDto)
+    public async Task<IActionResult> UpdateIngredientCategory([FromBody] UpdateIngredientCategoryDto ingredientCategoryDto)
     {
         try
         {

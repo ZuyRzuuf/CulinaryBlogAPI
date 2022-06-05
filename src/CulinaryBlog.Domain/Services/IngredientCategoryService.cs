@@ -29,6 +29,11 @@ public class IngredientCategoryService : IIngredientCategoryService
 
     public Task<IngredientCategory> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategoryDto)
     {
+        if (ingredientCategoryDto.Name == "")
+        {
+            throw new ArgumentException("Name cannot be empty");
+        }
+        
         var response = _ingredientCategoryRepository.CreateIngredientCategory(ingredientCategoryDto);
 
         return response;
