@@ -23,7 +23,7 @@ public class IngredientCategoryControllerTest
     [Test]
     public void Test1()
     {
-        IList<IngredientCategory> ingredientCategoryInMemoryDatabase = new List<IngredientCategory>
+        IEnumerable<IngredientCategory> ingredientCategoryInMemoryDatabase = new List<IngredientCategory>
         {
             new() {Name = "IngredientCategory_1"},
             new() {Name = "IngredientCategory_2"},

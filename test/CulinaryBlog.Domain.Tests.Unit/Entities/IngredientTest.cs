@@ -8,9 +8,9 @@ namespace CulinaryBlog.Domain.Tests.Unit.Entities;
 public class IngredientTest
 {
     private readonly Guid _guid = Guid.NewGuid();
-    private readonly string _name = "IngredientName";
+    private const string Name = "IngredientName";
 
-    private readonly IngredientCategory _ingredientCategory = new IngredientCategory()
+    private readonly IngredientCategory _ingredientCategory = new()
     {
         Name = "IngredientCategoryName"
     };
@@ -25,21 +25,21 @@ public class IngredientTest
     {
         var ingredient = new Ingredient()
         {
-            Name = _name,
+            Name = Name,
             IngredientCategory = _ingredientCategory
         };
 
-        Assert.AreNotEqual(ingredient.UUID, _guid);
-        Assert.AreEqual(ingredient.Name, _name);
+        Assert.AreNotEqual(ingredient.Uuid, _guid);
+        Assert.AreEqual(ingredient.Name, Name);
         Assert.AreEqual(ingredient.IngredientCategory, _ingredientCategory);
     }
 
     [Test]
-    public void WhenFieldsAreNotInitialized_ThenNameShuldBeNull()
+    public void WhenFieldsAreNotInitialized_ThenNameShouldBeNull()
     {
         var ingredient = new Ingredient();
-
-        Assert.AreNotEqual(ingredient.UUID, _guid);
+    
+        Assert.AreNotEqual(ingredient.Uuid, _guid);
         Assert.AreEqual(ingredient.Name, null);
         Assert.AreNotEqual(ingredient.IngredientCategory.Uuid, _guid);
         Assert.AreEqual(ingredient.IngredientCategory.Name, null);

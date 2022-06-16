@@ -2,8 +2,8 @@ namespace CulinaryBlog.Domain.Entities;
 
 public class Ingredient
 {
-    public Guid UUID { get; } = Guid.NewGuid();
-    public string? Name { get; set; }
+    public Guid Uuid { get; set; }
+    public string Name { get; set; } = default!;
 
     public IngredientCategory IngredientCategory { get; set; } = new();
 }

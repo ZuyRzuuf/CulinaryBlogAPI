@@ -5,7 +5,7 @@ namespace CulinaryBlog.Domain.Interfaces;
 
 public interface IIngredientCategoryRepository
 {
-    public Task<IList<IngredientCategory>> GetIngredientCategories();
+    public Task<IEnumerable<IngredientCategory>> GetIngredientCategories();
     public Task<IngredientCategory> GetIngredientCategory(Guid uuid);
     public Task<IngredientCategory> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategoryDto);
     public Task<int> UpdateIngredientCategory(UpdateIngredientCategoryDto ingredientCategoryDto);

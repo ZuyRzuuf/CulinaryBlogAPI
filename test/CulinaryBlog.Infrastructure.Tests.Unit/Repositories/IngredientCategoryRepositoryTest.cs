@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Castle.Core.Internal;
 using CulinaryBlog.Domain.Dto;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
@@ -13,8 +14,7 @@ namespace CulinaryBlog.Infrastructure.Tests.Unit.Repositories;
 public class IngredientCategoryRepositoryTest
 {
     private Mock<IIngredientCategoryRepository> _mockRepository = null!;
-    // private IEnumerable<IngredientCategory> _ingredientCategoryInMemoryDatabase = new List<IngredientCategory>();
-    private IList<IngredientCategory> _ingredientCategoryInMemoryDatabase = new List<IngredientCategory>();
+    private IEnumerable<IngredientCategory> _ingredientCategoryInMemoryDatabase = new List<IngredientCategory>();
     
     [SetUp]
     public void Setup()
@@ -80,7 +80,7 @@ public class IngredientCategoryRepositoryTest
     }
 
     [Test]
-    public async Task CreateIngredientCategory_ReturnsStatusCreated_WhenIngredientCategoryCreated()
+    public async Task CreateIngredientCategory_ReturnsCreatedObject_WhenIngredientCategoryCreated()
     {
         var ingredientCategoryDto = new CreateIngredientCategoryDto()
         {
@@ -98,7 +98,7 @@ public class IngredientCategoryRepositoryTest
                     Name = dto.Name
                 };
         
-                _ingredientCategoryInMemoryDatabase.Add(ingredientCategory);
+                _ingredientCategoryInMemoryDatabase.ToList().Add(ingredientCategory);
 
                 return Task.FromResult(ingredientCategory);
             });
@@ -109,5 +109,63 @@ public class IngredientCategoryRepositoryTest
         Assert.IsInstanceOf<IngredientCategory>(created);
         Assert.AreEqual(uuid, created.Uuid);
         Assert.AreEqual(ingredientCategoryDto.Name, created.Name);
+    }
+
+    [Test]
+    public async Task UpdateIngredientCategory_ReturnsTrue_WhenIngredientCategoryIsUpdated()
+    {
+        var uuid = Guid.Parse("fe0efe1e-eab7-4ca4-a059-e51de04b0eed");
+        var ingredientCategoryDto = new UpdateIngredientCategoryDto()
+        {
+            Uuid = uuid,
+            Name = "test"
+        };
+
+        _mockRepository.Setup(r => r.UpdateIngredientCategory(ingredientCategoryDto))
+            .Returns((IngredientCategoryDto dto) =>
+            {
+                var ingredientCategoryList = _ingredientCategoryInMemoryDatabase.Where(ic => ic.Uuid == uuid).ToList();
+
+                if (ingredientCategoryList.IsNullOrEmpty() || ingredientCategoryList.Count > 1) return Task.FromResult(0);
+                
+                ingredientCategoryList.ForEach(ic => ic.Name = ingredientCategoryDto.Name);
+
+                var isUpdated = ingredientCategoryList.FirstOrDefault(ic => ic.Name == ingredientCategoryDto.Name);
+
+                return Task.FromResult(isUpdated != null ? 1 : 0);
+            });
+
+        var isUpdated = await _mockRepository.Object.UpdateIngredientCategory(ingredientCategoryDto);
+        
+        Assert.AreEqual(1, isUpdated);
+    }
+
+    [Test]
+    public async Task UpdateIngredientCategory_ReturnsFalse_WhenIngredientCategorWasNotFound()
+    {
+        var uuid = Guid.Parse("fe0efe1e-eab7-4ca4-b059-e51de04b0eed");
+        var ingredientCategoryDto = new UpdateIngredientCategoryDto()
+        {
+            Uuid = uuid,
+            Name = "test"
+        };
+
+        _mockRepository.Setup(r => r.UpdateIngredientCategory(ingredientCategoryDto))
+            .Returns((IngredientCategoryDto dto) =>
+            {
+                var ingredientCategoryList = _ingredientCategoryInMemoryDatabase.Where(ic => ic.Uuid == uuid).ToList();
+
+                if (ingredientCategoryList.IsNullOrEmpty() || ingredientCategoryList.Count > 1) return Task.FromResult(0);
+                
+                ingredientCategoryList.ForEach(ic => ic.Name = ingredientCategoryDto.Name);
+
+                var isUpdated = ingredientCategoryList.FirstOrDefault(ic => ic.Name == ingredientCategoryDto.Name);
+
+                return Task.FromResult(isUpdated != null ? 1 : 0);
+            });
+
+        var isUpdated = await _mockRepository.Object.UpdateIngredientCategory(ingredientCategoryDto);
+        
+        Assert.AreEqual(0, isUpdated);
     }
 }

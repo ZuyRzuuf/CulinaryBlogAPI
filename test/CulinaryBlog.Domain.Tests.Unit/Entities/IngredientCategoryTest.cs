@@ -28,7 +28,7 @@ public class IngredientCategoryTest
     }
 
     [Test]
-    public void WhenNameIsNotInitialized_ThenNameShuldBeNull()
+    public void WhenNameIsNotInitialized_ThenNameShouldBeNull()
     {
         var ingredientCategory = new IngredientCategory();
 

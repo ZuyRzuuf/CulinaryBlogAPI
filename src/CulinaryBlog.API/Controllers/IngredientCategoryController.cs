@@ -1,4 +1,3 @@
-using System.Text;
 using CulinaryBlog.Domain.Dto;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
@@ -53,13 +52,19 @@ public class IngredientCategoryController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IngredientCategory))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> CreateIngredientCategory([FromBody] CreateIngredientCategoryDto ingredientCategory)
+    public async Task<IActionResult> CreateIngredientCategory([FromBody] CreateIngredientCategoryDto ingredientCategoryDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, ModelState);
+        }
+        
         try
         {
             var createdIngredientCategory =
-                await _ingredientCategoryService.CreateIngredientCategory(ingredientCategory);
+                await _ingredientCategoryService.CreateIngredientCategory(ingredientCategoryDto);
 
             return CreatedAtAction(
                 "IngredientCategoryByUuid", 
@@ -75,10 +80,16 @@ public class IngredientCategoryController : ControllerBase
 
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateIngredientCategory([FromBody] UpdateIngredientCategoryDto ingredientCategoryDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, ModelState);
+        }
+        
         try
         {
             var response = await _ingredientCategoryService.UpdateIngredientCategory(ingredientCategoryDto);
