@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CulinaryBlog.Domain.Entities;
-using CulinaryBlog.Infrastructure.Interfaces;
+using CulinaryBlog.Domain.Interfaces;
 using Moq;
 using NUnit.Framework;
 
@@ -45,19 +46,39 @@ public class IngredientRepositoryTest
     }
     
     [Test]
-    public void GetIngredientCategories_Returns_IngredientForIngredientCategory()
+    public void GetIngredientByUuid_Returns_IngredientForGivenUuid()
     {
-        // _mockRepository.Setup(r => r.)
-        // _mockRepository.Setup(r => r.GetIngredientCategories())
-        //     .Returns(() => Task.FromResult(
-        //         ingredientCategoryInMemoryDatabase
-        //     ));
-        //
-        // var actual = _mockRepository.Object.GetIngredientCategories();
-        //
-        // Assert.NotNull(actual.Result);
-        // Assert.AreEqual(ingredientCategoryInMemoryDatabase, actual.Result);
+        var expectedIngredient = _ingredientInMemoryDatabase.ToList()[1];
         
-        Assert.Pass();
+        _mockRepository.Setup(r => r.GetIngredientByUuid(expectedIngredient.Uuid))
+            .Returns((Guid uuid) => Task.FromResult(
+                _ingredientInMemoryDatabase.Single(i => i.Uuid == uuid)
+            ));
+
+        var actual = _mockRepository.Object.GetIngredientByUuid(expectedIngredient.Uuid);
+        
+        Assert.NotNull(actual.Result);
+        Assert.AreEqual(expectedIngredient.Uuid, actual.Result.Uuid);
+        Assert.AreEqual(expectedIngredient.Name, actual.Result.Name);
+        Assert.AreEqual(expectedIngredient.IngredientCategory?.Name, actual.Result.IngredientCategory?.Name);
+    }
+    
+    [Test]
+    public void GetIngredientsByIngredientCategory_Returns_IngredientForGivenIngredientCategory()
+    {
+        var ingredientCategory = _ingredientCategoryInMemoryDatabase.ToList()[0];
+        var expectedIngredients = _ingredientInMemoryDatabase.Where(
+            i => i.IngredientCategory.Uuid == ingredientCategory.Uuid
+        ).ToList();
+        
+        _mockRepository.Setup(r => r.GetIngredientsByIngredientCategory(ingredientCategory.Uuid))
+            .Returns((Guid uuid) => Task.FromResult(
+                _ingredientInMemoryDatabase.Where(i => i.IngredientCategory.Uuid == uuid)
+            ));
+
+        var actual = _mockRepository.Object.GetIngredientsByIngredientCategory(ingredientCategory.Uuid);
+        
+        Assert.NotNull(actual.Result);
+        Assert.AreEqual(expectedIngredients, actual.Result);
     }
 }
