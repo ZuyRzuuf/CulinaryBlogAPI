@@ -18,22 +18,62 @@ public class IngredientCategoryRepository : IIngredientCategoryRepository
 
     public async Task<IEnumerable<IngredientCategory>> GetIngredientCategories()
     {
-        const string query = "SELECT * FROM ingredient_category";
+        const string query = "SELECT * FROM ingredient_category ic INNER JOIN ingredient i on ic.uuid = i.ingredient_category";
 
         using var connection = _mysqlContext.CreateConnection();
-        var ingredientsCategories = await connection.QueryAsync<IngredientCategory>(query);
+        var ingredientCategoriesDictionary = new Dictionary<Guid, IngredientCategory>();
+        var ingredientsCategories = await connection.QueryAsync<IngredientCategory, Ingredient, IngredientCategory>(
+            query, (ingredientCategory, ingredient) =>
+            {
+                if (!ingredientCategoriesDictionary.TryGetValue(ingredientCategory.Uuid, out var ingredientCategoryEntry))
+                {
+                    ingredientCategoryEntry = ingredientCategory;
+                    ingredientCategoryEntry.Ingredients = new List<Ingredient>();
+                    ingredientCategoriesDictionary.Add(ingredientCategoryEntry.Uuid, ingredientCategoryEntry);
+                }
 
-        return ingredientsCategories.ToList();
+                ingredientCategoryEntry.Ingredients?.Add(ingredient);
+
+                return ingredientCategoryEntry;
+            },
+            splitOn: "uuid"
+        );
+
+        return ingredientsCategories.Distinct().ToList();
     }
 
     public async Task<IngredientCategory> GetIngredientCategory(Guid uuid)
     {
-        const string query = "SELECT * FROM ingredient_category WHERE uuid = @Uuid";
+        const string query = "SELECT * FROM ingredient_category ic INNER JOIN ingredient i on ic.uuid = i.ingredient_category WHERE ic.uuid = @Uuid";
 
         using var connection = _mysqlContext.CreateConnection();
-        var ingredientsCategory = await connection.QuerySingleOrDefaultAsync<IngredientCategory>(query, new {uuid});
+        var ingredientCategoryDictionary = new Dictionary<Guid, IngredientCategory>();
+        var ingredientsCategory = await connection.QueryAsync<IngredientCategory, Ingredient, IngredientCategory>(
+            query, (ingredientCategory, ingredient) =>
+            {
+                // if (ingredient.IngredientCategory != null) ingredient.IngredientCategory.Uuid = ingredientCategory.Uuid;
+                if (ingredientCategoryDictionary.TryGetValue(ingredientCategory.Uuid,
+                        out var existingIngredientCategory))
+                {
+                    ingredientCategory = existingIngredientCategory;
+                }
+                else
+                {
+                    ingredientCategory.Ingredients = new List<Ingredient>();
+                    ingredientCategoryDictionary.Add(ingredientCategory.Uuid, ingredientCategory);
+                }
+                
+                ingredientCategory.Ingredients.Add(ingredient);
 
-        return ingredientsCategory;
+                return ingredientCategory;
+            },
+            splitOn: "uuid",
+            param: new {uuid}
+        );
+
+        // TODO: create custom exception
+        // TODO: handle the exception when more then single ingredient category found
+        return ingredientsCategory.Distinct().SingleOrDefault() ?? throw new EntryPointNotFoundException();
     }
 
     public async Task<IngredientCategory> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategoryDto)

@@ -41,7 +41,6 @@ public class IngredientTest
     
         Assert.AreNotEqual(ingredient.Uuid, _guid);
         Assert.AreEqual(ingredient.Name, null);
-        Assert.AreNotEqual(ingredient.IngredientCategory.Uuid, _guid);
-        Assert.AreEqual(ingredient.IngredientCategory.Name, null);
+        Assert.AreEqual(ingredient.IngredientCategory, null);
     }
 }

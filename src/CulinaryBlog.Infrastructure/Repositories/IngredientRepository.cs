@@ -14,12 +14,36 @@ public class IngredientRepository : IIngredientRepository
         _mysqlContext = mysqlContext;
     }
 
+    public async Task<IEnumerable<Ingredient>> GetIngredientsWithIngredientCategory()
+    {
+        const string query = "SELECT * FROM ingredient INNER JOIN ingredient_category ic ON ic.uuid = ingredient.ingredient_category";
+        // const string query = "SELECT * FROM ingredient";
+
+        using var connection = _mysqlContext.CreateConnection();
+        var ingredients = await connection.QueryAsync<Ingredient, IngredientCategory, Ingredient>(
+            query, (ingredient, ingredientCategory) =>
+            {
+                ingredient.IngredientCategory = ingredientCategory;
+
+                return ingredient;
+            },
+            splitOn: "ingredient_category"
+        );
+
+        return ingredients;
+    }
+
+    public async Task<IEnumerable<Ingredient>> GetIngredientsWithoutIngredientCategory()
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<IEnumerable<Ingredient>> GetIngredientsByIngredientCategory(Guid uuid)
     {
         const string query = "SELECT * FROM ingredient WHERE ingredient_category = @Uuid";
         
         using var connection = _mysqlContext.CreateConnection();
-        var ingredients = await connection.QuerySingleOrDefaultAsync<IEnumerable<Ingredient>>(query, new {uuid});
+        var ingredients = await connection.QueryAsync<Ingredient>(query, new {uuid});
 
         return ingredients;
     }

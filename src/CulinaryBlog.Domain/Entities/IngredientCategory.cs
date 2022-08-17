@@ -4,5 +4,5 @@ public class IngredientCategory
 {
     public Guid Uuid { get; set; }
     public string? Name { get; set; }
-    public List<Ingredient>? Ingredients { get; set; }
+    public ICollection<Ingredient>? Ingredients { get; set; }
 }

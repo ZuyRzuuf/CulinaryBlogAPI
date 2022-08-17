@@ -14,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<MysqlContext>();
 builder.Services.AddScoped<IIngredientCategoryRepository, IngredientCategoryRepository>();
 builder.Services.AddScoped<IIngredientCategoryService, IngredientCategoryService>();
+builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
+builder.Services.AddScoped<IIngredientService, IngredientService>();
 builder.Services.RegisterDataServices();
 SqlMapper.AddTypeHandler(new MySqlGuidTypeHandler());
 
