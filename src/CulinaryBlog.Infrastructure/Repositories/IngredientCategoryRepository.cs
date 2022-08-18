@@ -19,7 +19,7 @@ public class IngredientCategoryRepository : IIngredientCategoryRepository
 
     public async Task<IEnumerable<IngredientCategory>> GetIngredientCategories()
     {
-        const string query = "SELECT * FROM ingredient_category ic INNER JOIN ingredient i on ic.uuid = i.ingredient_category";
+        const string query = "SELECT * FROM ingredient_category ic LEFT JOIN ingredient i on ic.uuid = i.ingredient_category";
 
         using var connection = _mysqlContext.CreateConnection();
         var ingredientCategoriesDictionary = new Dictionary<Guid, IngredientCategory>();
