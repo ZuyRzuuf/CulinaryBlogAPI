@@ -3,6 +3,7 @@ using CulinaryBlog.Domain.Dto;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
 using CulinaryBlog.Infrastructure.Database;
+using CulinaryBlog.Infrastructure.Exceptions;
 using Dapper;
 
 namespace CulinaryBlog.Infrastructure.Repositories;
@@ -51,7 +52,8 @@ public class IngredientCategoryRepository : IIngredientCategoryRepository
         var ingredientsCategory = await connection.QueryAsync<IngredientCategory, Ingredient, IngredientCategory>(
             query, (ingredientCategory, ingredient) =>
             {
-                // if (ingredient.IngredientCategory != null) ingredient.IngredientCategory.Uuid = ingredientCategory.Uuid;
+                if (ingredient.IngredientCategory != null) ingredient.IngredientCategory.Uuid = ingredientCategory.Uuid;
+                
                 if (ingredientCategoryDictionary.TryGetValue(ingredientCategory.Uuid,
                         out var existingIngredientCategory))
                 {
@@ -63,7 +65,7 @@ public class IngredientCategoryRepository : IIngredientCategoryRepository
                     ingredientCategoryDictionary.Add(ingredientCategory.Uuid, ingredientCategory);
                 }
                 
-                ingredientCategory.Ingredients.Add(ingredient);
+                ingredientCategory.Ingredients?.Add(ingredient);
 
                 return ingredientCategory;
             },
@@ -71,9 +73,7 @@ public class IngredientCategoryRepository : IIngredientCategoryRepository
             param: new {uuid}
         );
 
-        // TODO: create custom exception
-        // TODO: handle the exception when more then single ingredient category found
-        return ingredientsCategory.Distinct().SingleOrDefault() ?? throw new EntryPointNotFoundException();
+        return ingredientsCategory.Distinct().SingleOrDefault() ?? throw new IngredientCategoryNotFoundException();
     }
 
     public async Task<IngredientCategory> CreateIngredientCategory(CreateIngredientCategoryDto ingredientCategoryDto)

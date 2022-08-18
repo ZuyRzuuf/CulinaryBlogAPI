@@ -1,6 +1,7 @@
 using CulinaryBlog.Domain.Dto;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
+using CulinaryBlog.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CulinaryBlog.API.Controllers;
@@ -35,6 +36,7 @@ public class IngredientCategoryController : ControllerBase
     [HttpGet("{uuid:guid}")]
     [ActionName("IngredientCategoryByUuid")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IngredientCategory))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetIngredientCategory(Guid uuid)
     {
@@ -44,9 +46,13 @@ public class IngredientCategoryController : ControllerBase
 
             return Ok(ingredientCategory);
         }
+        catch (IngredientCategoryNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
         catch (Exception e)
         {
-            return StatusCode(500, e.Message);
+            return BadRequest(e.Message);
         }
     }
 
