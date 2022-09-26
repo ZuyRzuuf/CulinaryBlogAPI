@@ -1,7 +1,9 @@
+using CulinaryBlog.API.Validators;
 using CulinaryBlog.Domain.Dto;
 using CulinaryBlog.Domain.Entities;
 using CulinaryBlog.Domain.Interfaces;
 using CulinaryBlog.Infrastructure.Exceptions;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CulinaryBlog.API.Controllers;
@@ -119,6 +121,20 @@ public class IngredientCategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteIngredientCategory(Guid uuid)
     {
+        var ingredientCategory = new IngredientCategory()
+        {
+            Uuid = uuid
+        };
+        var ingredientCategoryValidator = new IngredientCategoryValidator();
+        
+        var validation = ingredientCategoryValidator
+            .ValidateAsync(ingredientCategory, options => options.IncludeRuleSets("Uuid"));
+        
+        if (!validation.Result.IsValid)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, validation.Result.Errors); 
+        }
+        
         try
         {
             var response = await _ingredientCategoryService.DeleteIngredientCategory(uuid);
